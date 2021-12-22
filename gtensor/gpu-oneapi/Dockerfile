@@ -45,3 +45,17 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN apt-get clean \
  && rm -rf /var/lib/apt/lists/*
+
+# setvars.sh environment variables
+RUN env > default_env_vars; \
+. /opt/intel/oneapi/setvars.sh; \
+env > env_vars; \
+diff default_env_vars env_vars \
+| grep ">" | sed  s/..// \
+| sort \
+| sed 's/^/export /' | sed "s/=/='/" | sed "s/$/'/" \
+>> /root/.oneapi_env_vars; \
+# clean up
+rm *env_vars
+
+ENTRYPOINT ["bash", "-c", "source /root/.oneapi_env_vars && \"$@\"", "bash"]
