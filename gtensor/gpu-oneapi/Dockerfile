@@ -23,10 +23,10 @@ ARG oneapi_repo=https://apt.repos.intel.com/oneapi
 RUN echo "deb $oneapi_repo all main" > /etc/apt/sources.list.d/oneAPI.list
 
 ARG graphics_repo=https://repositories.intel.com/graphics/ubuntu
-RUN echo "deb [trusted=yes arch=amd64] $graphics_repo bionic-devel main" > /etc/apt/sources.list.d/intel-graphics.list
+RUN echo "deb [trusted=yes arch=amd64] $graphics_repo focal main" > /etc/apt/sources.list.d/intel-graphics.list
 
 # install cmake
-ARG cmake_url=https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0-linux-x86_64.sh
+ARG cmake_url=https://github.com/Kitware/CMake/releases/download/v3.20.6/cmake-3.20.6-linux-x86_64.sh
 ADD $cmake_url /
 RUN file=$(basename "$cmake_url") && \
     bash $file --prefix=/usr --skip-license && \
@@ -40,7 +40,8 @@ RUN apt-get install -y --no-install-recommends \
   clinfo \
   intel-opencl-icd \
   intel-level-zero-gpu \
-  level-zero
+  level-zero \
+  level-zero-dev
 
 RUN apt-get clean \
  && rm -rf /var/lib/apt/lists/*
