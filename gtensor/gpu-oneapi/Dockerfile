@@ -3,13 +3,19 @@ FROM docker.io/ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get -y update && apt-get install -y --no-install-recommends \
-  ca-certificates \
-  gnupg \
-  git \
-  build-essential \
-  wget \
-  clang-9
+RUN apt-get -y update \
+    && apt-get install -y --no-install-recommends locales \
+      ca-certificates \
+      gnupg \
+      git \
+      build-essential \
+      wget \
+      clang-9
+    && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+    && dpkg-reconfigure --frontend=noninteractive locales \
+    && update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8 
+ENV LC_ALL en_US.UTF-8
 
 # add apt repo public key
 ARG url=https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
@@ -33,7 +39,7 @@ RUN file=$(basename "$cmake_url") && \
     rm $file
 
 RUN apt-get update -y
-RUN apt-get install -y --no-install-recommends \
+ && apt-get install -y --no-install-recommends \
   intel-oneapi-compiler-dpcpp-cpp \
   intel-oneapi-mkl \
   intel-oneapi-mkl-devel \
